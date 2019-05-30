@@ -14,7 +14,7 @@ publishJar {
 
     bintray {
         username = "tanvd"
-        repository = "tanvd.konfy"
+        repository = "konfy"
         info {
             description = "Konfy Kara support"
             githubRepo = "https://github.com/TanVD/konfy"

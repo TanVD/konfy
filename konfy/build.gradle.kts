@@ -15,7 +15,7 @@ publishJar {
 
     bintray {
         username = "tanvd"
-        repository = "tanvd.konfy"
+        repository = "konfy"
         info {
             description = "Statically typed configurations for Kotlin"
             githubRepo = "https://github.com/TanVD/konfy"
