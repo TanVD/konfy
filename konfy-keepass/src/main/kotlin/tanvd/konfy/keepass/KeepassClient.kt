@@ -1,4 +1,4 @@
-package tanvd.konfy.provider
+package tanvd.konfy.keepass
 
 import de.slackspace.openkeepass.KeePassDatabase
 import de.slackspace.openkeepass.domain.KeePassFile

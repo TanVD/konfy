@@ -1,6 +1,7 @@
-package tanvd.konfy.provider
+package tanvd.konfy.kara
 
 import tanvd.konfy.conversion.ConversionService
+import tanvd.konfy.provider.ConfigProvider
 import java.io.File
 import java.lang.reflect.Type
 

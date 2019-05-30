@@ -1,6 +1,7 @@
+package tanvd.konfy.keepass
+
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
-import tanvd.konfy.provider.KeepassClient
 import java.io.File
 import java.lang.reflect.Type
 

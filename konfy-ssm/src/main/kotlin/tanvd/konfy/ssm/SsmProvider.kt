@@ -1,9 +1,10 @@
-package tanvd.konfy.provider
+package tanvd.konfy.ssm
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import com.amazonaws.services.simplesystemsmanagement.model.ParameterNotFoundException
 import tanvd.konfy.conversion.ConversionService
+import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
 
 /**

@@ -1,3 +1,5 @@
+package tanvd.konfy.toml
+
 import net.consensys.cava.toml.*
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider

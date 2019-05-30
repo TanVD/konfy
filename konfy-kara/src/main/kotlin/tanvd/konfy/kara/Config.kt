@@ -1,4 +1,4 @@
-package tanvd.konfy.provider
+package tanvd.konfy.kara
 
 import java.io.File
 import java.util.*

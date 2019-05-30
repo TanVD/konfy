@@ -1,4 +1,4 @@
-package tanvd.konfy.provider
+package tanvd.konfy.ssm
 
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 
