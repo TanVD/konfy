@@ -1,2 +1,0 @@
-package tanvd.konfy.provider
-
