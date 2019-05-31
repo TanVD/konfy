@@ -8,10 +8,6 @@ dependencies {
 }
 
 publishJar {
-    publication {
-        artifactId = "tanvd.konfy.kara"
-    }
-
     bintray {
         username = "tanvd"
         repository = "konfy"

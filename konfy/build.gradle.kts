@@ -9,10 +9,6 @@ dependencies {
 }
 
 publishJar {
-    publication {
-        artifactId = "tanvd.konfy"
-    }
-
     bintray {
         username = "tanvd"
         repository = "konfy"
