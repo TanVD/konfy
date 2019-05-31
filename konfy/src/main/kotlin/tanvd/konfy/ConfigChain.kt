@@ -54,12 +54,14 @@ open class ConfigChain(private val providers: List<ConfigProvider>) {
     fun <R, N> provided(key: String? = null, default: N? = null) = PropertyProvider<R, N>(key, default)
 
     inline fun <reified N> tryGet(key: String): N? = tryGet<N>(key, N::class)
-    fun <N> tryGet(key: String, type: Type) = providers.firstNotNull { it.tryGet<N>(key, type) }
+    fun <N> tryGet(key: String, type: Type): N? = providers.firstNotNull { it.tryGet<N>(key, type) }
     fun <N> tryGet(key: String, klass: KClass<*>): N? = tryGet<N>(key, klass.java)
 
-    inline fun <reified N> get(key: String, default: N? = null): N? = get(key, N::class, default)
-    fun <N> get(key: String, type: Type, default: N? = null) = tryGet<N>(key, type) ?: default
-    fun <N> get(key: String, klass: KClass<*>, default: N? = null) = get(key, klass.java, default)
+    inline fun <reified N> get(key: String, default: N? = null): N = get(key, N::class, default)
+    @Suppress("UNCHECKED_CAST")
+    fun <N> get(key: String, type: Type, default: N? = null): N = (tryGet<N>(key, type) ?: default) as N
+
+    fun <N> get(key: String, klass: KClass<*>, default: N? = null): N = get(key, klass.java, default)
 
     /** Reset caches for all properties. */
     fun reset() {
