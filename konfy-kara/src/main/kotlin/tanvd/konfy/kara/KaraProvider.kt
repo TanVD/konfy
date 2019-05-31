@@ -7,6 +7,8 @@ import java.lang.reflect.Type
 
 class KaraProvider(path: String, baseFile: File? = null,
                    val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+    constructor(file: File, convert: (String, Type) -> Any? = ConversionService::convert) : this(file.name, file.parentFile, convert)
+
     private val config = Config().apply { Config.fillFrom(this, path, baseFile) }
 
     override fun fetch(key: String, type: Type): Any? {
