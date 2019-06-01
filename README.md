@@ -1,12 +1,16 @@
 # Konfy 
 
 [![CircleCI](https://circleci.com/gh/TanVD/konfy.svg?style=svg)](https://circleci.com/gh/TanVD/konfy)
-[![Download](https://api.bintray.com/packages/tanvd/konfy/tanvd.konfy/images/download.svg)](https://bintray.com/tanvd/konfy/tanvd.konfy/_latestVersion)
+[![Download](https://api.bintray.com/packages/tanvd/konfy/konfy/images/download.svg) ](https://bintray.com/tanvd/konfy/konfy/_latestVersion)
 
 
 Konfy is a statically typed and easy to use configuration library for Kotlin. 
 
-It supports plenty of formats with so-called "providers":
+The main idea of Konfy is "chains" and "views" - you are creating a chain (or cascade)
+of a configs to retrieve parameters from different storage through one interface; after 
+it you can create "view" - a typeful interface to config parameters.
+
+Konfy supports plenty of formats with corresponding providers:
 * Environment variables (out of the box) - support of environment variables
 * TOML (konfy-toml) - support of TOML
 * SSM (konfy-ssm) - support of AWS Simple System Manager parameters
@@ -31,10 +35,9 @@ dependencies {
 
 ## What's inside
 
-### Config provider
+### Providers
 
-First of all, you will to create `ConfigProvider` object. Objects of such
-type represents a read-only view to configuration file.
+First of all, you will need to create `ConfigProvider` object.
 
 `ConfigProvider` can be asked directly for a config parameter via `get` call.
 
@@ -48,31 +51,40 @@ val value = envVar.get<Int>("value", default = 5)
 Note: all providers includes a parameter in a constructor for a conversion
 function. This function will be used to convert value from string 
 representation to specific type. Conversion is needed only if specific 
-configuration type does not support such a type of parameters, and it should
+configuration format does not support such type of parameters, and it should
 be deserialized from text representation.
 
-### Config chain
+### Chaining
 
 Few providers can be linked to a chain. Resolution of parameter will stop
 once it's found in a provider inside a chain.
 
-In chain variables definition `provided` delegate can be used - it delegates
-a field into a chain parameter. Note, that by default parameter is cached.
+`val chain = ConfigChain(EnvVarProvider, KeepassProvider)`
+
+### Views
+
+Now you can create view to a chain - it will provide you with a typeful interface
+to a configuration.
 
 ```kotlin
-object Config: ConfigChaing(EnvVarProvider, KeepassProvider) {
+object Config: ConfigView(chain) {
     /** Field delegates call to a `key` parameter in a config. No default. */
     val key: String by provided()
-    /** Field delegates call to a `other-key` parameter in a config. Default is 0. */
+    /** Field delegates call to an `other-key` parameter in a config. Default is 0. */
     val otherKey: Int by provided("other-key", 0)
+    
+    /** Field delegates call to a `lastKey` parameter in a config. Field will not be cached. */
+    val lastKey: Int by provided("other-key", cached = false)
 }
 ```
 
+View can cache parameters and provide defaults for them.
+
 ## Few advices
 
-One the most convenient usages for Konfy Chains is to split your configs
-in a **secret** and not-very-secret and put one of them into KeePass db (kdbx)
-and the second into simple config file - TOML. Chain will merge configs together
-and provide one interface to all parameters.
+One of the interesting usages for Konfy is to split your configs
+in a **secret** and *not-very-secret* and put secret config into KeePass DB (kdbx)
+and not-very-secret into simple config file - for example, TOML. Chain will merge configs 
+together and View will provide one typeful interface  to all parameters.
 
 
