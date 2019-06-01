@@ -1,5 +1,6 @@
 package tanvd.konfy.conversion
 
+import tanvd.konfy.utils.toTypedArray
 import java.lang.reflect.Type
 import java.lang.reflect.WildcardType
 import java.math.BigDecimal
@@ -30,7 +31,7 @@ object ConversionService {
                     value.drop(1).dropLast(1)
                             .split(",")
                             .map { it.trim() }
-                            .map { convert(it, type.componentType) }.toTypedArray()
+                            .map { convert(it, type.componentType) }.toTypedArray(type.componentType)
                 }
                 type is Class<*> && type.isEnum -> {
                     type.enumConstants?.firstOrNull { (it as Enum<*>).name == value }
@@ -40,6 +41,8 @@ object ConversionService {
             }
         }
     }
+
+
 
     inline fun <reified T : Any> convert(value: String): T {
         return convert(value, T::class.java) as T

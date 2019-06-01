@@ -38,7 +38,7 @@ internal class Config {
     companion object {
         private val varPattern = Pattern.compile("\\$\\{([^}]*)}")
 
-        fun fillFrom(config: Config, path: String, baseFile: File? = null) {
+        fun fillFrom(config: Config, path: String, classloader: ClassLoader, baseFile: File? = null) {
             fun eval(name: String): String =
                     config.tryGet(name) ?: System.getProperty(name) ?: System.getenv(name) ?: error("$name is not defined")
 
@@ -46,10 +46,21 @@ internal class Config {
 
             val file = if (resolvedPath.startsWith('/') || baseFile == null) File(resolvedPath) else File(baseFile, resolvedPath)
 
-            file.readText(Charsets.UTF_8).reader().forEachLine {
+            val (baseFile: File?, text: String) = if (file.exists()) {
+                file.parentFile to file.readText(Charsets.UTF_8)
+            } else {
+                val resource = classloader.getResourceAsStream(path)
+                if (resource != null) {
+                    null to resource.reader(Charsets.UTF_8).readText()
+                } else {
+                    error("Could not found a config file")
+                }
+            }
+
+            text.reader().forEachLine {
                 val line = it.trim()
                 when {
-                    line.startsWith("include ") -> fillFrom(config, line.removePrefix("include "), file.parentFile)
+                    line.startsWith("include ") -> fillFrom(config, line.removePrefix("include "), classloader, baseFile)
                     line.startsWith("log ") -> {
                     }
                     line.startsWith("#") || line.isEmpty() -> {
