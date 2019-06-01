@@ -6,9 +6,9 @@
 
 Konfy is a statically typed and easy to use configuration library for Kotlin. 
 
-The main idea of Konfy is "chains" and "views" - you are creating a chain (or cascade)
+The main idea of Konfy is **chains** and **views** - you are creating a **chain**
 of a configs to retrieve parameters from different storage through one interface; after 
-it you can create "view" - a typeful interface to config parameters.
+it you can create **view** - a typeful interface to config parameters.
 
 Konfy supports plenty of formats with corresponding providers:
 * Environment variables (out of the box) - support of environment variables
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    compile("tanvd.konfy", "konfy", "0.1.0")
+    compile("tanvd.konfy", "konfy", "0.1.4")
     //Other needed providers
 }
 ```
@@ -42,8 +42,8 @@ First of all, you will need to create `ConfigProvider` object.
 `ConfigProvider` can be asked directly for a config parameter via `get` call.
 
 ```kotlin
-//Instantiation of EnvVarProvider with explicit conversion service
-val envVar = EnvVarProvider(convert = ConversionService::convert)
+//Instantiation of EnvVarProvider with implicit default conversion service
+val envVar = EnvVarProvider()
 //Get value from a provider with explicit default value
 val value = envVar.get<Int>("value", default = 5)
 ```
@@ -59,7 +59,9 @@ be deserialized from text representation.
 Few providers can be linked to a chain. Resolution of parameter will stop
 once it's found in a provider inside a chain.
 
-`val chain = ConfigChain(EnvVarProvider, KeepassProvider)`
+```kotlin
+val chain = ConfigChain(EnvVarProvider, KeepassProvider)
+```
 
 ### Views
 
@@ -68,12 +70,13 @@ to a configuration.
 
 ```kotlin
 object Config: ConfigView(chain) {
-    /** Field delegates call to a `key` parameter in a config. No default. */
+    /** Delegates to a `key` parameter in a config. No default. Will be cached. */
+    
     val key: String by provided()
-    /** Field delegates call to an `other-key` parameter in a config. Default is 0. */
+    /** Delegates to an `other-key` parameter in a config. Default is 0. Will be cached.  */
     val otherKey: Int by provided("other-key", 0)
     
-    /** Field delegates call to a `lastKey` parameter in a config. Field will not be cached. */
+    /** Delegates to a `lastKey` parameter in a config. No default. Will not be cached. */
     val lastKey: Int by provided("other-key", cached = false)
 }
 ```
