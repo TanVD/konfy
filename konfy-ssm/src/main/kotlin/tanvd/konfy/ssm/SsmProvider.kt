@@ -14,11 +14,12 @@ import java.lang.reflect.Type
  */
 class SsmProvider(private val prefix: String?, private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
                   val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
-    override fun fetch(key: String, type: Type): Any? {
+    @Suppress("UNCHECKED_CAST")
+    override fun <N : Any> fetch(key: String, type: Type): N? {
         val fullKey = prefix?.let { "$it.$key" } ?: key
         val request = GetParameterRequest().withName(fullKey).withWithDecryption(true)
         return try {
-            ssm.getParameter(request)?.parameter?.value?.trim()?.let { convert(it, type) }
+            ssm.getParameter(request)?.parameter?.value?.trim()?.let { convert(it, type) as N }
         } catch (e: ParameterNotFoundException) {
             null
         }
