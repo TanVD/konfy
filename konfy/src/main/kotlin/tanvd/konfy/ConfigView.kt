@@ -18,7 +18,8 @@ import kotlin.reflect.jvm.jvmErasure
 open class ConfigView(val provider: ConfigProvider) {
     private val properties = HashSet<PropertyProvider<*, *>>()
 
-    inner class PropertyProvider<R, N>(private val key: String?, private val default: N?, private val cached: Boolean) : ReadOnlyProperty<R, N> {
+    inner class PropertyProvider<R, N>(private val key: String?, private val default: N?,
+                                       private val cached: Boolean, private val transform: (N) -> N) : ReadOnlyProperty<R, N> {
         @Volatile
         private var wasCached = false
 
@@ -42,7 +43,7 @@ open class ConfigView(val provider: ConfigProvider) {
         }
 
         @Suppress("UNCHECKED_CAST")
-        private fun get(property: KProperty<*>): N? = (provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default) as N?
+        private fun get(property: KProperty<*>): N? = ((provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default) as N?)?.let { transform(it) }
 
         fun reset() {
             cache = null
@@ -59,7 +60,7 @@ open class ConfigView(val provider: ConfigProvider) {
      * @param default default value to return if it cannot be found
      * @param cached should this property be cached
      */
-    fun <R, N> provided(key: String? = null, default: N? = null, cached: Boolean = true) = PropertyProvider<R, N>(key, default, cached)
+    fun <R, N> provided(key: String? = null, default: N? = null, cached: Boolean = true, transform: (N) -> N = { it }) = PropertyProvider<R, N>(key, default, cached, transform)
 
     /** Reset caches for all properties. */
     fun reset() {

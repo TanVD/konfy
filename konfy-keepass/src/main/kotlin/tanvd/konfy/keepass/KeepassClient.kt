@@ -12,6 +12,6 @@ internal class KeepassClient(databaseFile: File, masterPassword: String) {
     }
 
     fun get(title: String): String? {
-        return database.getEntryByTitle(title)?.let { it.password }
+        return database.getEntryByTitle(title)?.password
     }
 }
