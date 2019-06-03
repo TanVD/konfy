@@ -1,5 +1,5 @@
 group = "tanvd.konfy"
-version = "0.1.8"
+version = "0.1.9-SNAPSHOT"
 
 plugins {
     id("tanvd.kosogor") version "1.0.5" apply true
