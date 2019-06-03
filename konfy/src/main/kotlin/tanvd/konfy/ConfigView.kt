@@ -20,36 +20,33 @@ open class ConfigView(val provider: ConfigProvider) {
 
     inner class PropertyProvider<R, N>(private val key: String?, private val default: N?, private val cached: Boolean) : ReadOnlyProperty<R, N> {
         @Volatile
-        private var isCached = false
+        private var wasCached = false
 
         @Volatile
         private var cache: N? = null
 
         @Suppress("UNCHECKED_CAST")
         override operator fun getValue(thisRef: R, property: KProperty<*>): N {
-            val getKey = key ?: property.name
-
-            if (!cached) {
-                return (provider.tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default) as N
-            }
-
-            if (isCached) {
+            if (wasCached) {
                 return cache as N
             }
 
-            cache = (provider.tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default) as N?
-            isCached = true
-
-            if (property.returnType.isMarkedNullable && cache == null) {
-                throw IllegalStateException("Not found key $getKey in a provider, but property was not nullable.")
+            if (!cached) {
+                return get(property) as N
             }
+
+            cache = get(property)
+            wasCached = true
 
             return cache as N
         }
 
+        @Suppress("UNCHECKED_CAST")
+        private fun get(property: KProperty<*>): N? = (provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default) as N?
+
         fun reset() {
-            isCached = false
             cache = null
+            wasCached = false
         }
     }
 
