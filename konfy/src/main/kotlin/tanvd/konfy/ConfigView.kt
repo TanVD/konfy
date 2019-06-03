@@ -1,5 +1,6 @@
 package tanvd.konfy
 
+import tanvd.konfy.provider.ConfigProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.jvmErasure
@@ -14,7 +15,7 @@ import kotlin.reflect.jvm.jvmErasure
  *
  * Note, that caching is enabled by default.
  */
-open class ConfigView(val chain: ConfigChain) {
+open class ConfigView(val provider: ConfigProvider) {
     private val properties = HashSet<PropertyProvider<*, *>>()
 
     inner class PropertyProvider<R, N>(private val key: String?, private val default: N?, private val cached: Boolean) : ReadOnlyProperty<R, N> {
@@ -29,18 +30,18 @@ open class ConfigView(val chain: ConfigChain) {
             val getKey = key ?: property.name
 
             if (!cached) {
-                return chain.get<Any>(getKey, property.returnType.jvmErasure, default) as N
+                return (provider.tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default) as N
             }
 
             if (isCached) {
                 return cache as N
             }
 
-            cache = chain.get<Any>(getKey, property.returnType.jvmErasure, default) as N
+            cache = (provider.tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default) as N?
             isCached = true
 
             if (property.returnType.isMarkedNullable && cache == null) {
-                throw IllegalStateException("Not found key $getKey in provider chain, but property was not nullable.")
+                throw IllegalStateException("Not found key $getKey in a provider, but property was not nullable.")
             }
 
             return cache as N

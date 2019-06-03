@@ -1,0 +1,9 @@
+first_test = "test-pass"
+second_test = 42
+
+[section]
+fourth_test = "test-pass"
+arena-letters = [ "All", "King", "Edwards", "Horses", "Can", "Move", "Bloody", "Fast" ]
+array-in-array = [["123"], ["456"]]
+    [section.nested]
+    best-bike-ever = "KTM Duke 390"
