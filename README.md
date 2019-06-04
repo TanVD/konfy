@@ -12,6 +12,8 @@ it you can create **view** - a typeful interface to config parameters.
 
 Konfy supports plenty of formats with corresponding providers:
 * Environment variables (out of the box) - support of environment variables
+* System properties (out of the box) - support of system properties
+* JNDI string resources (out of the box) - support of string variables in `env` context
 * TOML (konfy-toml) - support of TOML
 * SSM (konfy-ssm) - support of AWS Simple System Manager parameters
 * KeePass (konfy-keepass) - support of parameters storing in a kdbx encrypted files
@@ -28,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    compile("tanvd.konfy", "konfy", "0.1.4")
+    compile("tanvd.konfy", "konfy", "0.1.9")
     //Other needed providers
 }
 ```
