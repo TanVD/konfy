@@ -10,7 +10,7 @@ import javax.naming.*
  *
  * Does not use cache.
  */
-class JNDIProvider(val name: String = "java:comp/env") : ConfigProvider() {
+class JNDIProvider(private val name: String = "java:comp/env") : ConfigProvider() {
     private val context by lazy { InitialContext().lookup(name) as Context }
 
     @Suppress("UNCHECKED_CAST")

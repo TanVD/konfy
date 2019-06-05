@@ -14,7 +14,7 @@ class ConfigChain(private val providers: List<ConfigProvider>) : ConfigProvider(
     constructor(vararg providers: ConfigProvider) : this(providers.toList())
 
     override fun <N : Any> fetch(key: String, type: Type): N? {
-        return providers.firstNotNull { it.tryGet<N>(key, type) }
+        return providers.firstNotNull { it.tryGet(key, type) }
     }
 }
 
