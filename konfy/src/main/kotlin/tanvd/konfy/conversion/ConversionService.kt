@@ -42,7 +42,6 @@ object ConversionService {
         }
     }
 
-
     inline fun <reified T : Any> convert(value: String): T {
         return convert(value, T::class.java) as T
     }

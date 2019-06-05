@@ -12,7 +12,7 @@ import java.lang.reflect.Type
  * Each key will be prepended with a prefix (with a slash after it) -- "${prefix}/${key}"
  * If prefix is null, then key itself will be used as key
  * @param prefix prefix for SSM
- * @param separator separator used by a client, provider will map it to `/` 
+ * @param separator separator used by a client, provider will map it to `/`
  */
 class SsmProvider(private val prefix: String?, private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
                   private val separator: String,

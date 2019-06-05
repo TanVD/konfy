@@ -43,7 +43,9 @@ open class ConfigView(val provider: ConfigProvider) {
         }
 
         @Suppress("UNCHECKED_CAST")
-        private fun get(property: KProperty<*>): N? = ((provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default) as N?)?.let { transform(it) }
+        private fun get(property: KProperty<*>): N? = (
+                provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default
+                )?.let { transform(it as N) }
 
         fun reset() {
             cache = null
@@ -60,7 +62,8 @@ open class ConfigView(val provider: ConfigProvider) {
      * @param default default value to return if it cannot be found
      * @param cached should this property be cached
      */
-    fun <R, N> provided(key: String? = null, default: N? = null, cached: Boolean = true, transform: (N) -> N = { it }) = PropertyProvider<R, N>(key, default, cached, transform)
+    fun <R, N> provided(key: String? = null, default: N? = null,
+                        cached: Boolean = true, transform: (N) -> N = { it }) = PropertyProvider<R, N>(key, default, cached, transform)
 
     /** Reset caches for all properties. */
     fun reset() {
