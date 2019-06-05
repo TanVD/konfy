@@ -16,13 +16,15 @@ object GlobalKonfy {
             field = value
         }
 
-    var provider: ConfigProvider by Delegates.notNull()
+    @Suppress("ObjectPropertyName")
+    private var _provider: ConfigProvider by Delegates.notNull()
+    val provider: ConfigProvider
+        get() = _provider
 
     @Synchronized
     fun init(provider: ConfigProvider) {
         if (isInitialized) error("GlobalKonfy is already initialized")
-
-        this.provider = provider
+        this._provider = provider
     }
 
     inline fun <reified T : Any> tryGet(value: String): T? = provider.tryGet(value)
