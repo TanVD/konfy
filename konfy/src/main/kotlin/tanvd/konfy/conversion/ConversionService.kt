@@ -19,7 +19,7 @@ object ConversionService {
         Double::class.java, java.lang.Double::class.java -> value.toDouble()
         Long::class.java, java.lang.Long::class.java -> value.toLong()
         Boolean::class.java, java.lang.Boolean::class.java -> value.toBoolean()
-        String::class.java, java.lang.String::class.java -> value
+        String::class.java, java.lang.String::class.java -> value.trim('"', '\'')
         BigDecimal::class.java -> BigDecimal(value)
         BigInteger::class.java -> BigInteger(value)
         else -> {

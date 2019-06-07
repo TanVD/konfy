@@ -14,15 +14,15 @@ import java.lang.reflect.Type
  * @param prefix prefix for SSM
  * @param separator separator used by a client, provider will map it to `/`
  */
-class SsmProvider(private val prefix: String?, private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
-                  private val separator: String,
-                  val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+class SsmProvider(private val prefix: String?, private val separator: String,
+                  private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
+                  private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val fullKey = (prefix?.let { "$it/$key" } ?: key).replace(separator, "/")
         val request = GetParameterRequest().withName(fullKey).withWithDecryption(true)
         return try {
-            ssm.getParameter(request)?.parameter?.value?.trim()?.let { convert(it, type) as N }
+            ssm.getParameter(request)?.parameter?.value?.let { convert(it, type) as N }
         } catch (e: ParameterNotFoundException) {
             null
         }

@@ -3,7 +3,7 @@ package tanvd.konfy.toml
 import net.consensys.cava.toml.*
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
-import tanvd.konfy.utils.toTypedArray
+import tanvd.konfy.toml.utils.toTypedArray
 import java.io.File
 import java.lang.reflect.Type
 
@@ -12,7 +12,7 @@ import java.lang.reflect.Type
  * Does not use cache.
  */
 class TomlProvider(private val client: TomlParseResult,
-                   val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+                   private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     constructor(configFile: File, convert: (String, Type) -> Any? = ConversionService::convert) : this(Toml.parse(configFile.readText()), convert)
     constructor(config: String, convert: (String, Type) -> Any? = ConversionService::convert) : this(Toml.parse(config), convert)
 

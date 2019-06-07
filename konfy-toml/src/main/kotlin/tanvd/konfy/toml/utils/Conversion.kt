@@ -1,4 +1,4 @@
-package tanvd.konfy.utils
+package tanvd.konfy.toml.utils
 
 internal fun Collection<*>.toTypedArray(type: Class<*>): Array<*> {
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")

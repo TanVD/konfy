@@ -6,14 +6,13 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.jvmErasure
 
 /**
- * [ConfigView] is a read-only view to [ConfigProvider]
+ * [ConfigView] is a read-only view to [ConfigProvider].
+ * It uses [GlobalKonfy] provider by default.
  *
- * It provides handful delegate [provided] to get the
- * parameters from chain in a strongly typed way.
+ * [ConfigView] provides handful delegate [provided] to
+ * get the parameters from chain in a typeful way.
  *
- * Also, this delegate is capable of caching.
- *
- * Note, that caching is enabled by default.
+ * [provided] delegate will cache values by default.
  */
 open class ConfigView(val provider: ConfigProvider = GlobalKonfy.provider) {
     inner class PropertyProvider<R, N>(private val key: String?, private val default: N?,
@@ -53,13 +52,12 @@ open class ConfigView(val provider: ConfigProvider = GlobalKonfy.provider) {
     }
 
     /**
-     * Provides value from one of ConfigProviders (getting first not null value)
-     * By default name of property will be used as key.
-     * By default, no default value is provided
+     * Provides value from a provider (getting first not null value)
      *
-     * @param key override key to pass to ConfigProviders
+     * @param key override key to pass to ConfigProviders (name of variable if not set)
      * @param default default value to return if it cannot be found
-     * @param cache should this property be cached
+     * @param cache should this property be cached (true if not set)
+     * @param transform transforming function of property
      */
     fun <R, N> provided(key: String? = null, default: N? = null,
                         cache: Boolean = true, transform: (N) -> N = { it }) = PropertyProvider<R, N>(key, default, cache, transform)

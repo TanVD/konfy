@@ -1,8 +1,8 @@
 package tanvd.konfy.kara
 
 import tanvd.konfy.conversion.ConversionService
+import tanvd.konfy.kara.utils.toTypedArray
 import tanvd.konfy.provider.ConfigProvider
-import tanvd.konfy.utils.toTypedArray
 import java.io.File
 import java.lang.reflect.Type
 
@@ -11,7 +11,7 @@ import java.lang.reflect.Type
  * Uses cache.
  */
 class KaraProvider(path: String, baseFile: File? = null, classLoader: ClassLoader,
-                   val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+                   private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     constructor(file: File, classLoader: ClassLoader, convert: (String, Type) -> Any? = ConversionService::convert) : this(file.name, file.parentFile, classLoader, convert)
 
     private val config = Config().apply { Config.fillFrom(this, path, classLoader, baseFile) }

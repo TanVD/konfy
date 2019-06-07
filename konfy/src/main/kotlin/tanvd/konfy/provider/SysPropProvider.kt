@@ -7,7 +7,7 @@ import java.lang.reflect.Type
  * Config provider with System properties as backend
  * Does not use cache.
  */
-class SysPropProvider(val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+class SysPropProvider(private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val value = System.getProperty(key) ?: return null

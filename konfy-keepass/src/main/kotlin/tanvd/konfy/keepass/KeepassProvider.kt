@@ -10,7 +10,7 @@ import java.lang.reflect.Type
  * Does not use cache.
  */
 class KeepassProvider(database: File, password: String,
-                      val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+                      private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     private val client = KeepassClient(database, password)
 
     @Suppress("UNCHECKED_CAST")
