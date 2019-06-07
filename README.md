@@ -13,7 +13,8 @@ it you can create **view** - a typeful interface to config parameters.
 Konfy supports plenty of formats with corresponding providers:
 * Environment variables (out of the box) - support of environment variables
 * System properties (out of the box) - support of system properties
-* JNDI string resources (out of the box) - support of string variables in `env` context
+* JNDI resources (out of the box) - support of JNDI resources in different contexts
+* Property files (out of the box) - support of properties files
 * TOML (konfy-toml) - support of TOML
 * SSM (konfy-ssm) - support of AWS Simple System Manager parameters
 * KeePass (konfy-keepass) - support of parameters storing in a kdbx encrypted files
@@ -30,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile("tanvd.konfy", "konfy", "0.1.9")
+    compile("tanvd.konfy", "konfy", "0.1.11")
     //Other needed providers
 }
 ```
@@ -50,11 +51,21 @@ val envVar = EnvVarProvider()
 val value = envVar.get<Int>("value", default = 5)
 ```
 
-Note: all providers includes a parameter in a constructor for a conversion
-function. This function will be used to convert value from string 
-representation to specific type. Conversion is needed only if specific 
-configuration format does not support such type of parameters, and it should
-be deserialized from text representation.
+#### Conversions
+
+Almost all providers (excluding JNDI) include a parameter in a constructor 
+for a conversion function. This function will be used to convert values from 
+string representation to specific type. 
+
+Conversion is needed only if specific configuration format does not support 
+such type of parameters, and it should be deserialized from text representation.
+
+Konfy assumes following formats of values:
+* Boolean: true, false
+* Integer: 1
+* Double: 1.0
+* String: "string"
+* Array: [1, 2], ["1", "2"]
 
 ### Chaining
 
@@ -71,7 +82,7 @@ Now you can create view to a chain - it will provide you with a typeful interfac
 to a configuration.
 
 ```kotlin
-object Config: ConfigView(chain) {
+object Config: ConfigView() {
     /** Delegates to a `key` parameter in a config. No default. Will be cached. */
     
     val key: String by provided()
@@ -84,6 +95,14 @@ object Config: ConfigView(chain) {
 ```
 
 View can cache parameters and provide defaults for them.
+
+### GlobalKonfy
+
+`GlobalKonfy` object is basically a global configuration interface. You may initialize
+it on a start of application with a configuration chain and then use it everywhere to
+get configuration parameters.
+
+Moreover, `ConfigView` by default will take its `ConfigProvider` from `GlobalKonfy`
 
 ## Few advices
 
