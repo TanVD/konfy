@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+
 group = "tanvd.konfy"
 version = "0.1.12-SNAPSHOT"
 
@@ -17,6 +19,14 @@ subprojects {
 
     repositories {
         jcenter()
+    }
+
+    tasks.withType<KotlinJvmCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            languageVersion = "1.3"
+            apiVersion = "1.3"
+        }
     }
 
     detekt {
