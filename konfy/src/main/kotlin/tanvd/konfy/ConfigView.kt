@@ -29,7 +29,7 @@ open class ConfigView(val provider: ConfigProvider = GlobalKonfy.provider) {
             }
 
             if (!cache) {
-                return get(property) as N
+                return get(property)
             }
 
             synchronized(this) {
@@ -45,10 +45,15 @@ open class ConfigView(val provider: ConfigProvider = GlobalKonfy.provider) {
         }
 
         @Suppress("UNCHECKED_CAST")
-        private fun get(property: KProperty<*>): N? = (
-                provider.tryGet<Any>(key ?: property.name, property.returnType.jvmErasure) ?: default
-                )?.let { transform(it as N) }
-
+        private fun get(property: KProperty<*>): N {
+            val getKey = key ?: property.name
+            val result = provider.tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default
+            val transformed = result?.let { transform(it as N) }
+            if (!property.returnType.isMarkedNullable && transformed == null) {
+                throw IllegalStateException("Not found key $getKey in a provider, but property was not nullable.")
+            }
+            return transformed as N
+        }
     }
 
     /**
