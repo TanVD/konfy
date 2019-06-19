@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 
 group = "tanvd.konfy"
-version = "0.1.12"
+version = "0.1.13-SNAPSHOT"
 
 plugins {
     id("tanvd.kosogor") version "1.0.6" apply true
