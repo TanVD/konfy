@@ -30,6 +30,7 @@ object GlobalKonfy: ConfigProvider() {
     fun init(provider: ConfigProvider) {
         if (isInitialized) error("GlobalKonfy is already initialized")
         this._provider = provider
+        this.isInitialized = true
     }
 
     override fun <N : Any> fetch(key: String, type: Type): N? = provider.fetch(key, type)
