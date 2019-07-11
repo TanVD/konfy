@@ -49,11 +49,12 @@ internal class Config {
             val (baseFile: File?, text: String) = if (file.exists()) {
                 file.parentFile to file.readText(Charsets.UTF_8)
             } else {
-                val resource = classloader.getResourceAsStream(path)
+                val resourceFile = file.path.replace(File.separator, "/")
+                val resource = classloader.getResourceAsStream(resourceFile)
                 if (resource != null) {
                     null to resource.reader(Charsets.UTF_8).readText()
                 } else {
-                    error("Could not found a config file")
+                    error("Could not found a config file $resourceFile")
                 }
             }
 
