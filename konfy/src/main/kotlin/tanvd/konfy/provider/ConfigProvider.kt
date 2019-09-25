@@ -55,9 +55,8 @@ abstract class ConfigProvider {
      * Provides value from a provider (getting first not null value)
      *
      * @param key override key to pass to ConfigProviders (name of variable if not set)
-     * @param default default value to return if it cannot be found
-     * @param transform transforming function of property
+     * @param transform transforming function of property, that will be invoked only if property found
      */
-    fun <R, N, T> provided(key: String? = null, default: N? = null, transform: (N) -> T) = PropertyProvider<R, N, T>(key, default, transform)
+    fun <R, N: Any, T> provided(key: String? = null, default: N? = null, transform: (N) -> T) = PropertyProvider<R, N, T>(key, default, transform)
 }
 
