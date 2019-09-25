@@ -25,17 +25,16 @@ object ConversionService {
         else -> {
             when {
                 type is Class<*> && type.isArray -> {
-                    if (!value.startsWith("[") || !value.endsWith("]")) {
-                        throw ConversionException("Wrong representation of array")
-                    }
+                    if (!value.startsWith("[") || !value.endsWith("]")) throw ConversionException("Wrong representation of array")
+
                     value.drop(1).dropLast(1)
-                            .split(",")
-                            .map { it.trim() }
-                            .map { convert(it, type.componentType) }.toTypedArray(type.componentType)
+                        .split(",")
+                        .map { it.trim() }
+                        .map { convert(it, type.componentType) }.toTypedArray(type.componentType)
                 }
                 type is Class<*> && type.isEnum -> {
                     type.enumConstants?.firstOrNull { (it as Enum<*>).name == value }
-                            ?: throw ConversionException("Value $value is not an enum member name of $type")
+                        ?: throw ConversionException("Value $value is not an enum member name of $type")
                 }
                 else -> throw ConversionException("Type $type is not supported in default data conversion service")
             }

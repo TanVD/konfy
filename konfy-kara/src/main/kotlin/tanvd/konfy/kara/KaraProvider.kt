@@ -21,9 +21,9 @@ class KaraProvider(path: String, baseFile: File? = null, classLoader: ClassLoade
         return config.tryGet(key)?.let {
             if (type is Class<*> && type.isArray) {
                 it.split(",")
-                        .map { it.trim() }
-                        .map { convert(it, type.componentType) }
-                        .toTypedArray(type.componentType)
+                    .map { it.trim() }
+                    .map { convert(it, type.componentType) }
+                    .toTypedArray(type.componentType)
             } else {
                 convert(it, type)
             } as N

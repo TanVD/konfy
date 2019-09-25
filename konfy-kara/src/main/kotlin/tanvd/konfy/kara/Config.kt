@@ -40,7 +40,7 @@ internal class Config {
 
         fun fillFrom(config: Config, path: String, classloader: ClassLoader, baseFile: File? = null) {
             fun eval(name: String): String =
-                    config.tryGet(name) ?: System.getProperty(name) ?: System.getenv(name) ?: error("$name is not defined")
+                config.tryGet(name) ?: System.getProperty(name) ?: System.getenv(name) ?: error("$name is not defined")
 
             val resolvedPath = renderVars(path, ::eval)
 

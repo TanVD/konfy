@@ -6,7 +6,7 @@ version = "0.1.15-SNAPSHOT"
 plugins {
     id("tanvd.kosogor") version "1.0.7" apply true
     id("io.gitlab.arturbosch.detekt").version("1.0.0-RC14") apply true
-    kotlin("jvm") version "1.3.31" apply false
+    kotlin("jvm") version "1.3.50" apply false
 }
 
 

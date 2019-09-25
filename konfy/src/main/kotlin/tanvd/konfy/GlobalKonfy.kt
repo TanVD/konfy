@@ -1,5 +1,6 @@
 package tanvd.konfy
 
+import tanvd.konfy.GlobalKonfy.init
 import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
 import kotlin.properties.Delegates
@@ -15,11 +16,9 @@ import kotlin.properties.Delegates
  * [ConfigView] objects will use it as a [ConfigProvider] by default,
  * if no other provider is used for them
  */
-object GlobalKonfy: ConfigProvider() {
+object GlobalKonfy : ConfigProvider() {
     var isInitialized: Boolean = false
-        private set(value) {
-            field = value
-        }
+        private set
 
     @Suppress("ObjectPropertyName")
     private var _provider: ConfigProvider by Delegates.notNull()

@@ -48,7 +48,7 @@ First of all, you will need to create `ConfigProvider` object.
 //Instantiation of EnvVarProvider with implicit default conversion service
 val envVar = EnvVarProvider()
 //Get value from a provider with explicit default value
-val value = envVar.get<Int>("value", default = 5)
+val value = envVar.get("value", default = 5)
 ```
 
 #### Conversions
