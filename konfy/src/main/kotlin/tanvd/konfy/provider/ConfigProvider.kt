@@ -30,16 +30,16 @@ abstract class ConfigProvider {
     fun <N : Any> get(key: String, type: Type, default: N? = null): N = (tryGet(key, type) ?: default) as N
     fun <N : Any> get(key: String, klass: KClass<*>, default: N? = null): N = get(key, klass.java, default)
 
-    inner class PropertyProvider<R, N>(private val key: String?, private val default: N?, private val transform: (N) -> N) : ReadOnlyProperty<R, N> {
+    inner class PropertyProvider<R, N, T>(private val key: String?, private val default: N?, private val transform: (N) -> T) : ReadOnlyProperty<R, T> {
         override operator fun getValue(thisRef: R, property: KProperty<*>) = get(property)
 
         @Suppress("UNCHECKED_CAST")
-        private fun get(property: KProperty<*>): N {
+        private fun get(property: KProperty<*>): T {
             val getKey = key ?: property.name
             val result = tryGet<Any>(getKey, property.returnType.jvmErasure) ?: default
             val transformed = result?.let { transform(it as N) }
             check(property.returnType.isMarkedNullable || transformed != null) { "Not found key $getKey in a provider, but property was not nullable." }
-            return transformed as N
+            return transformed as T
         }
     }
 
@@ -48,8 +48,16 @@ abstract class ConfigProvider {
      *
      * @param key override key to pass to ConfigProviders (name of variable if not set)
      * @param default default value to return if it cannot be found
+     */
+    fun <R, N> provided(key: String? = null, default: N? = null) = PropertyProvider<R, N, N>(key, default, { it })
+
+    /**
+     * Provides value from a provider (getting first not null value)
+     *
+     * @param key override key to pass to ConfigProviders (name of variable if not set)
+     * @param default default value to return if it cannot be found
      * @param transform transforming function of property
      */
-    fun <R, N> provided(key: String? = null, default: N? = null, transform: (N) -> N = { it }) = PropertyProvider<R, N>(key, default, transform)
+    fun <R, N, T> provided(key: String? = null, default: N? = null, transform: (N) -> T) = PropertyProvider<R, N, T>(key, default, transform)
 }
 

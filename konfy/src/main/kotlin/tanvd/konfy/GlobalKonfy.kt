@@ -35,7 +35,4 @@ object GlobalKonfy : ConfigProvider() {
     override fun <N : Any> fetch(key: String, type: Type): N? = provider.fetch(key, type)
 
     inline operator fun <reified T : Any> invoke(value: String, default: T? = null): T = get(value, default)
-
-    inline fun <reified T : Any> tryLazy(value: String) = lazy { tryGet<T>(value) }
-    inline fun <reified T : Any> lazy(value: String, default: T? = null) = lazy { invoke(value, default) }
 }
