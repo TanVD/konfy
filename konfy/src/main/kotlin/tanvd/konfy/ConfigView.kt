@@ -14,8 +14,9 @@ import tanvd.konfy.provider.ConfigProvider
 interface ConfigView {
     val provider: ConfigProvider
         get() = GlobalKonfy.provider
-
-    fun <R, N> provided(key: String? = null, default: N? = null) = provider.provided<R, N>(key, default)
-
-    fun <R, N: Any, T> provided(key: String? = null, default: N? = null, transform: (N) -> T) = provider.provided<R, N, T>(key, default, transform)
 }
+
+inline fun <R, reified N : Any, reified T> ConfigView.provided(key: String? = null, default: N? = null,
+                                                               noinline transform: (N) -> T) = provider.provided<R, N, T>(key, default, transform)
+
+inline fun <R, reified N> ConfigView.provided(key: String? = null, default: N? = null) = provider.provided<R, N>(key, default)
