@@ -36,7 +36,7 @@ abstract class ConfigProvider {
         @Suppress("UNCHECKED_CAST")
         private fun get(property: KProperty<*>): T {
             val getKey = key ?: property.name
-            val result = (tryGet<Any>(getKey, nKlass) ?: default) as N
+            val result = (tryGet<Any>(getKey, nKlass) ?: default) as N?
             val transformed = result?.let { transform(it) }
             check(property.returnType.isMarkedNullable || transformed != null) { "Not found key $getKey in a provider, but property was not nullable." }
             return transformed as T
