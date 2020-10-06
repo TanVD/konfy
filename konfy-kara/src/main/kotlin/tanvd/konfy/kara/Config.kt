@@ -7,25 +7,16 @@ import java.util.regex.Pattern
 import javax.naming.*
 
 internal class Config {
-    private val data = LinkedHashMap<String, String>()
-    private val cache = ConcurrentHashMap<String, String?>()
+    private val cache = ConcurrentHashMap<String, Optional<String>>()
 
-    fun tryGet(name: String): String? = lookupCache(name) {
-        lookupJNDI(name) ?: data[name]
-    }
+    fun tryGet(name: String): String? = cache.getOrPut(name) {
+        Optional.ofNullable(lookupJNDI(name))
+    }.orElse(null)
 
-    private fun lookupCache(name: String, eval: (String) -> String?) = cache[name] ?: run {
-        val answer = eval(name)
-        if (answer != null) {
-            cache.putIfAbsent(name, answer)
-        }
-        answer
-    }
 
     /** Sets a value for the given key. */
-    internal operator fun set(name: String, value: String) {
-        data[name] = value
-        cache.remove(name)
+    private operator fun set(name: String, value: String) {
+        cache[name] = Optional.of(lookupJNDI(name) ?: value)
     }
 
     private fun lookupJNDI(name: String): String? = try {
@@ -38,7 +29,7 @@ internal class Config {
     companion object {
         private val varPattern = Pattern.compile("\\$\\{([^}]*)}")
 
-        fun fillFrom(config: Config, path: String, classloader: ClassLoader, baseFile: File? = null) {
+        internal fun fillFrom(config: Config, path: String, classloader: ClassLoader, baseFile: File? = null) {
             fun eval(name: String): String =
                 config.tryGet(name) ?: System.getProperty(name) ?: System.getenv(name) ?: error("$name is not defined")
 
