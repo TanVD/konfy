@@ -4,9 +4,9 @@ group = "tanvd.konfy"
 version = "0.1.17"
 
 plugins {
-    id("tanvd.kosogor") version "1.0.7" apply true
-    id("io.gitlab.arturbosch.detekt").version("1.0.0-RC14") apply true
-    kotlin("jvm") version "1.3.50" apply false
+    id("tanvd.kosogor") version "1.0.9" apply true
+    id("io.gitlab.arturbosch.detekt") version ("1.8.0") apply true
+    kotlin("jvm") version "1.3.72" apply false
 }
 
 
@@ -31,8 +31,9 @@ subprojects {
 
     detekt {
         parallel = true
-        failFast = false
-        config = files(File(project.rootProject.projectDir, "buildScripts/detekt/detekt.yml"))
+
+        config = rootProject.files("detekt.yml")
+
         reports {
             xml {
                 enabled = false
