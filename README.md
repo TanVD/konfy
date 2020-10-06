@@ -1,6 +1,5 @@
 # Konfy 
 
-[![CircleCI](https://circleci.com/gh/TanVD/konfy.svg?style=svg)](https://circleci.com/gh/TanVD/konfy)
 [![Download](https://api.bintray.com/packages/tanvd/konfy/konfy/images/download.svg) ](https://bintray.com/tanvd/konfy/konfy/_latestVersion)
 
 
