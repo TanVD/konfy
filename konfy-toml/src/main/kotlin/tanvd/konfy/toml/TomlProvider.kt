@@ -1,6 +1,6 @@
 package tanvd.konfy.toml
 
-import net.consensys.cava.toml.*
+import org.tomlj.*
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
 import tanvd.konfy.toml.utils.toTypedArray
