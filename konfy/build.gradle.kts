@@ -12,6 +12,9 @@ val bintrayUploadEnabled = System.getenv("bintray_key") != null
 val artifactoryUploadEnabled = System.getenv("artifactory_url") != null
 
 publishJar {
+    publication {
+        this.artifactId = "konfy"
+    }
     if (bintrayUploadEnabled) {
         bintray {
             username = "tanvd"
