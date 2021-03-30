@@ -5,7 +5,7 @@ version = "0.1.19"
 
 plugins {
     id("tanvd.kosogor") version "1.0.10" apply true
-    id("io.gitlab.arturbosch.detekt") version ("1.15.0-RC1") apply true
+    id("io.gitlab.arturbosch.detekt") version ("1.16.0") apply true
     kotlin("jvm") version "1.4.32" apply false
 }
 

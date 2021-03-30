@@ -1,4 +1,4 @@
-rootProject.name = "konfy"
+rootProject.name = "konfy-root"
 
 include(":konfy")
 include(":konfy-toml")
