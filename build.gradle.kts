@@ -21,8 +21,9 @@ subprojects {
 
     repositories {
         mavenCentral()
-        if (bintrayUploadEnabled)
-            jcenter()
+        // TODO: Uncomment when detekt will be available on Maven Central
+//        if (bintrayUploadEnabled)
+        jcenter()
         if (artifactoryUploadEnabled)
             maven(System.getenv("artifactory_url")!!)
     }
