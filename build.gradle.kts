@@ -5,27 +5,35 @@ version = "0.1.19"
 
 plugins {
     id("tanvd.kosogor") version "1.0.10" apply true
-    id("io.gitlab.arturbosch.detekt") version ("1.16.0") apply true
-    kotlin("jvm") version "1.4.32" apply false
+    id("io.gitlab.arturbosch.detekt") version ("1.17.1") apply true
+    kotlin("jvm") version "1.5.21" apply false
+    `maven-publish`
 }
-
-val bintrayUploadEnabled = System.getenv("bintray_key") != null
-val artifactoryUploadEnabled = System.getenv("artifactory_url") != null
 
 subprojects {
     apply {
         plugin("kotlin")
+        plugin("maven-publish")
         plugin("tanvd.kosogor")
         plugin("io.gitlab.arturbosch.detekt")
     }
 
     repositories {
         mavenCentral()
-        // TODO: Uncomment when detekt will be available on Maven Central
-//        if (bintrayUploadEnabled)
-        jcenter()
-        if (artifactoryUploadEnabled)
-            maven(System.getenv("artifactory_url")!!)
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "SpacePackages"
+                url = uri("https://packages.jetbrains.team/maven/p/konfy/maven")
+
+                credentials {
+                    username = System.getenv("JB_SPACE_CLIENT_ID")
+                    password = System.getenv("JB_SPACE_CLIENT_SECRET")
+                }
+            }
+        }
     }
 
     tasks.withType<KotlinJvmCompile> {
