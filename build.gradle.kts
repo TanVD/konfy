@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
+import tanvd.kosogor.proxy.publishJar
 
 group = "tanvd.konfy"
 version = "0.1.19"
 
 plugins {
-    id("tanvd.kosogor") version "1.0.10" apply true
+    id("tanvd.kosogor") version "1.0.12" apply true
     id("io.gitlab.arturbosch.detekt") version ("1.17.1") apply true
     kotlin("jvm") version "1.5.21" apply false
     `maven-publish`
@@ -21,6 +22,8 @@ subprojects {
     repositories {
         mavenCentral()
     }
+
+    publishJar {  }
 
     publishing {
         repositories {
