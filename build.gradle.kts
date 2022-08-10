@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile
 import tanvd.kosogor.proxy.publishJar
 
 group = "tanvd.konfy"
-version = "0.1.19"
+version = "0.1.20-SNAPSHOT"
 
 plugins {
     id("tanvd.kosogor") version "1.0.12" apply true
