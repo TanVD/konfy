@@ -21,13 +21,10 @@ class K8sSecretsProvider(
 {
     private val api by lazy { CoreV1Api(k8sClient) }
 
-    private val base64Decoder = Base64.getDecoder()
-
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val secretValue = api.readNamespacedSecret(secretName, namespace, null)
-        val secretData = secretValue?.data?.get(key)?.let { base64Decoder.decode(it) }?.decodeToString()
-        return secretData?.let { convert(it, type) as N }
+        return secretValue?.data?.get(key)?.decodeToString()?.let { convert(it, type) as N }
     }
 }
 
