@@ -1,11 +1,11 @@
 package tanvd.konfy.k8s
 
 import io.kubernetes.client.openapi.ApiClient
+import io.kubernetes.client.openapi.ApiException
 import io.kubernetes.client.openapi.apis.CoreV1Api
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
-import java.util.Base64
 
 /**
  * Provider takes values from K8S Secrets.
@@ -23,7 +23,13 @@ class K8sSecretsProvider(
 
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
-        val secretValue = api.readNamespacedSecret(secretName, namespace, null)
+        val secretValue = runCatching {
+            api.readNamespacedSecret(secretName, namespace, null)
+        }.onFailure {
+            if (it is ApiException) {
+                throw ApiException("${it.message}: ${it.responseBody}")
+            }
+        }.getOrThrow()
         return secretValue?.data?.get(key)?.decodeToString()?.let { convert(it, type) as N }
     }
 }
