@@ -22,7 +22,7 @@ class TomlConfigTest {
 
     @Test
     fun get_keyInTable_gotValue() {
-        val value: String? = configProvider.get("section.fourth_test")
+        val value: String = configProvider.get("section.fourth_test")
         assertThat(value).isEqualTo("test-pass")
     }
 

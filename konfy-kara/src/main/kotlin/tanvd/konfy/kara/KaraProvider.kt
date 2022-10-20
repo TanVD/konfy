@@ -18,14 +18,14 @@ class KaraProvider(path: String, baseFile: File? = null, classLoader: ClassLoade
 
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
-        return config.tryGet(key)?.let {
+        return config.tryGet(key)?.let { value ->
             if (type is Class<*> && type.isArray) {
-                it.split(",")
+                value.split(",")
                     .map { it.trim() }
                     .map { convert(it, type.componentType) }
                     .toTypedArray(type.componentType)
             } else {
-                convert(it, type)
+                convert(value, type)
             } as N
         }
     }
