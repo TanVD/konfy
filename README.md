@@ -19,8 +19,6 @@ Konfy supports plenty of formats with corresponding providers:
 
 ## Setup
 
-`konfy` is released to JCenter
-
 To set it up, add a library to compile dependencies:
 ```kotlin
 repositories {
@@ -28,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile("tanvd.konfy", "konfy", "0.1.19")
+    compile("tanvd.konfy", "konfy", "0.1.20")
     //Other necessary providers
 }
 ```
