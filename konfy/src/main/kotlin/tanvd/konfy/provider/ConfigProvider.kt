@@ -26,7 +26,9 @@ abstract class ConfigProvider {
     fun <N : Any> tryGet(key: String, klass: KClass<*>): N? = tryGet(key, klass.java)
 
     inline fun <reified N : Any> get(key: String, default: N? = null): N = get(key, N::class.java, default)
-    fun <N : Any> get(key: String, type: Type, default: N? = null): N = (tryGet(key, type) ?: default) as N
+    fun <N : Any> get(key: String, type: Type, default: N? = null): N = checkNotNull(tryGet(key, type) ?: default) {
+        "Non-nullable property '$key' must contain a non-null value"
+    }
     fun <N : Any> get(key: String, klass: KClass<*>, default: N? = null): N = get(key, klass.java, default)
 
     inner class PropertyProvider<R, N, T>(private val key: String?, private val default: N?, private val transform: (N) -> T,
