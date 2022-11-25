@@ -5,9 +5,9 @@ group = "tanvd.konfy"
 version = "0.1.21-SNAPSHOT"
 
 plugins {
-    id("tanvd.kosogor") version "1.0.16" apply true
-    id("io.gitlab.arturbosch.detekt") version ("1.17.1") apply true
-    kotlin("jvm") version "1.7.20" apply false
+    id("tanvd.kosogor") version "1.0.17" apply true
+    id("io.gitlab.arturbosch.detekt") version ("1.22.0") apply true
+    kotlin("jvm") version "1.7.21" apply false
     `maven-publish`
 }
 
