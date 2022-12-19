@@ -8,29 +8,28 @@ import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
 
 /**
- * Provider takes values from K8S Secrets.
- * Each key will be extracted from [secretName] secret
+ * Provider takes values from K8S ConfigMaps.
+ * Each key will be extracted from [configMapName] secret
  * @param namespace K8S namespace
- * @param secretName Secret name
+ * @param configMapName ConfigMap name
  */
-class K8sSecretsProvider(
+class K8sConfigMapProvider(
     private val namespace: String = "default",
-    private val secretName: String,
+    private val configMapName: String,
     private val k8sClient: ApiClient = K8sClient.defaultClient,
-    private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider()
-{
+    private val convert: (String, Type) -> Any? = ConversionService::convert
+) : ConfigProvider() {
     private val api by lazy { CoreV1Api(k8sClient) }
 
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
-        val secretValue = runCatching {
-            api.readNamespacedSecret(secretName, namespace, null)
+        val configMapValue = runCatching {
+            api.readNamespacedConfigMap(configMapName, namespace, null)
         }.onFailure {
             if (it is ApiException) {
                 throw ApiException("${it.message}: ${it.responseBody}")
             }
         }.getOrThrow()
-        return secretValue?.data?.get(key)?.decodeToString()?.let { convert(it, type) as N }
+        return configMapValue?.data?.get(key)?.let { convert(it, type) as N }
     }
 }
-
