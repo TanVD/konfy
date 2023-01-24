@@ -39,8 +39,8 @@ class CachingProvider(
 
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
-        val now = Clock.System.now()
         return cache.computeIfAbsent(key) {
+            val now = Clock.System.now()
             val value = provider.tryGet<N>(it, type)
             CacheEntry(now, value)
         }.value as N?
