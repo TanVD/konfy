@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    compile("tanvd.konfy", "konfy", "0.1.22")
+    compile("tanvd.konfy", "konfy", "0.1.23")
     //Other necessary providers
 }
 ```
