@@ -35,7 +35,7 @@ class TomlConfigTest {
     @Test
     fun get_nestedArrayValue_gotValue() {
         val value: Array<Array<String>> = configProvider.get("section.array-in-array")
-        assertThat(value).containsAll(listOf(arrayOf("123"), arrayOf("456")))
+        assertThat(value).isDeepEqualTo(arrayOf(arrayOf("123"), arrayOf("456")))
     }
 
     @Test
