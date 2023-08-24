@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import tanvd.kosogor.proxy.publishJar
 
 group = "tanvd.konfy"
-version = "0.1.24"
+version = "0.1.25"
 
 plugins {
-    id("tanvd.kosogor") version "1.0.17" apply true
+    id("tanvd.kosogor") version "1.0.18" apply true
     id("io.gitlab.arturbosch.detekt") version ("1.22.0") apply true
-    kotlin("jvm") version "1.7.21" apply false
+    kotlin("jvm") version "1.9.0" apply false
     `maven-publish`
 }
 
@@ -39,11 +39,16 @@ subprojects {
         }
     }
 
-    tasks.withType<KotlinJvmCompile>().forEach {
-        it.kotlinOptions {
+    tasks.withType(JavaCompile::class) {
+        targetCompatibility = "11"
+    }
+
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        kotlinOptions {
             jvmTarget = "11"
-            languageVersion = "1.7"
-            apiVersion = "1.7"
+            apiVersion = "1.9"
+            languageVersion = "1.9"
+            freeCompilerArgs += "-Xuse-ir"
         }
     }
 

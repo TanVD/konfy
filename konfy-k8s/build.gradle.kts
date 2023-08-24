@@ -3,5 +3,5 @@ version = rootProject.version
 
 dependencies {
     api(project(":konfy"))
-    api("io.kubernetes", "client-java", "17.0.1")
+    api("io.kubernetes", "client-java", "18.0.1")
 }

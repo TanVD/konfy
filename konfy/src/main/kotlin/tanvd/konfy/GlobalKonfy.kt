@@ -20,7 +20,6 @@ object GlobalKonfy : ConfigProvider() {
     var isInitialized: Boolean = false
         private set
 
-    @Suppress("ObjectPropertyName")
     private var _provider: ConfigProvider by Delegates.notNull()
     val provider: ConfigProvider
         get() = _provider
