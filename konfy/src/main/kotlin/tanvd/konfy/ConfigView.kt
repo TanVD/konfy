@@ -16,7 +16,13 @@ interface ConfigView {
         get() = GlobalKonfy.provider
 }
 
-inline fun <R, reified N : Any, reified T> ConfigView.provided(key: String? = null, default: N? = null,
-                                                               noinline transform: (N) -> T) = provider.provided<R, N, T>(key, default, transform)
-
 inline fun <R, reified N> ConfigView.provided(key: String? = null, default: N? = null) = provider.provided<R, N>(key, default)
+
+inline fun <R, reified N : Any> ConfigView.provided(key: String? = null, noinline default: () ->  N?) = provider.provided<R, N>(key, default)
+
+inline fun <R, reified N : Any, reified T> ConfigView.provided(
+    key: String? = null,
+    default: N? = null,
+    noinline transform: (N) -> T
+) = provider.provided<R, N, T>(key, default, transform)
+

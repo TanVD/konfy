@@ -24,7 +24,7 @@ class K8sSecretsProvider(
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val secretValue = runCatching {
-            api.readNamespacedSecret(secretName, namespace, null)
+            api.readNamespacedSecret(secretName, namespace).execute()
         }.onFailure {
             if (it is ApiException) {
                 throw ApiException("${it.message}: ${it.responseBody}")

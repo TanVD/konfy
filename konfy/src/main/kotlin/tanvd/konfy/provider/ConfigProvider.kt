@@ -29,16 +29,19 @@ abstract class ConfigProvider {
     fun <N : Any> get(key: String, type: Type, default: N? = null): N = checkNotNull(tryGet(key, type) ?: default) {
         "Non-nullable property '$key' must contain a non-null value"
     }
+
     fun <N : Any> get(key: String, klass: KClass<*>, default: N? = null): N = get(key, klass.java, default)
 
-    inner class PropertyProvider<R, N, T>(private val key: String?, private val default: N?, private val transform: (N) -> T,
-                                          private val nKlass: KClass<*>) : ReadOnlyProperty<R, T> {
+    inner class PropertyProvider<R, N, T>(
+        private val key: String?, private val default: () -> N?, private val transform: (N) -> T,
+        private val nKlass: KClass<*>
+    ) : ReadOnlyProperty<R, T> {
         override operator fun getValue(thisRef: R, property: KProperty<*>) = get(property)
 
         @Suppress("UNCHECKED_CAST")
         private fun get(property: KProperty<*>): T {
             val getKey = key ?: property.name
-            val result = (tryGet<Any>(getKey, nKlass) ?: default) as N?
+            val result = (tryGet<Any>(getKey, nKlass) ?: default()) as N?
             val transformed = result?.let { transform(it) }
             check(property.returnType.isMarkedNullable || transformed != null) { "Not found key $getKey in a provider, but property was not nullable." }
             return transformed as T
@@ -51,7 +54,7 @@ abstract class ConfigProvider {
      * @param key override key to pass to ConfigProviders (name of variable if not set)
      * @param default default value to return if it cannot be found
      */
-    inline fun <R, reified N> provided(key: String? = null, default: N? = null) = PropertyProvider<R, N, N>(key, default, { it }, N::class)
+    inline fun <R, reified N> provided(key: String? = null, default: N? = null) = PropertyProvider<R, N, N>(key, { default }, { it }, N::class)
 
     /**
      * Provides value from a provider (getting first not null value)
@@ -59,7 +62,18 @@ abstract class ConfigProvider {
      * @param key override key to pass to ConfigProviders (name of variable if not set)
      * @param transform transforming function of property, that will be invoked only if property found
      */
-    inline fun <R, reified N : Any, reified T> provided(key: String? = null, default: N? = null,
-                                                        noinline transform: (N) -> T) = PropertyProvider<R, N, T>(key, default, transform, N::class)
+    inline fun <R, reified N : Any, reified T> provided(
+        key: String? = null,
+        default: N? = null,
+        noinline transform: (N) -> T
+    ) = PropertyProvider<R, N, T>(key, { default }, transform, N::class)
+
+    /**
+     * Provides value from a provider (getting first not null value)
+     *
+     * @param key override key to pass to ConfigProviders (name of variable if not set)
+     * @param default default value to return if it cannot be found
+     */
+    inline fun <R, reified N> provided(key: String? = null, noinline default: () -> N?) = PropertyProvider<R, N, N>(key, default, { it }, N::class)
 }
 

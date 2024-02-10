@@ -24,7 +24,7 @@ class K8sConfigMapProvider(
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val configMapValue = runCatching {
-            api.readNamespacedConfigMap(configMapName, namespace, null)
+            api.readNamespacedConfigMap(configMapName, namespace).execute()
         }.onFailure {
             if (it is ApiException) {
                 throw ApiException("${it.message}: ${it.responseBody}")

@@ -1,5 +1,5 @@
 job("Konfy / Build") {
-    container("openjdk:11") {
+    container("amazoncorretto:17-alpine3.19-jdk") {
         shellScript {
             content = """
               ./gradlew build  
@@ -9,7 +9,7 @@ job("Konfy / Build") {
 }
 
 job("Konfy / Test") {
-    container("openjdk:11") {
+    container("amazoncorretto:17-alpine3.19-jdk") {
         shellScript {
             content = """
               ./gradlew test  
@@ -25,7 +25,10 @@ job("Konfy / Release") {
         }
     }
 
-    container("openjdk:11") {
+    container("amazoncorretto:17-alpine3.19-jdk") {
+//        env["JB_SPACE_CLIENT_ID"] = "{{ project:spaceUsername }}"
+//        env["JB_SPACE_CLIENT_SECRET"] = "{{ project:spacePassword }}"
+
         shellScript {
             content = """
               ./gradlew publish    

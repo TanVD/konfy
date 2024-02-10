@@ -4,7 +4,7 @@ version = rootProject.version
 dependencies {
     api(project(":konfy"))
 
-    api("org.tomlj", "tomlj", "1.1.0")
+    api("org.tomlj", "tomlj", "1.1.1")
 
     testImplementation("org.assertj", "assertj-core", "3.24.2")
     testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.9.2")
