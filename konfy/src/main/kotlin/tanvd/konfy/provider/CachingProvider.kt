@@ -1,5 +1,6 @@
 package tanvd.konfy.provider
 
+import com.google.common.util.concurrent.Striped
 import kotlinx.coroutines.*
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -18,6 +19,7 @@ class CachingProvider(
     class CacheEntry(val mark: Instant, val value: Any?)
 
     private val cache = ConcurrentHashMap<String, CacheEntry>()
+    private val locks = Striped.lazyWeakReadWriteLock(128)
 
     init {
         if (lifetime != Duration.INFINITE) {
@@ -37,10 +39,34 @@ class CachingProvider(
         }
     }
 
+//    @Suppress("UNCHECKED_CAST")
+//    override fun <N : Any> fetch(key: String, type: Type): N? = cache.computeIfAbsent(key) {
+//        val now = Clock.System.now()
+//        val value = provider.tryGet<N>(it, type)
+//        CacheEntry(now, value)
+//    }.value as N?
+
     @Suppress("UNCHECKED_CAST")
-    override fun <N : Any> fetch(key: String, type: Type): N? = cache.computeIfAbsent(key) {
-        val now = Clock.System.now()
-        val value = provider.tryGet<N>(it, type)
-        CacheEntry(now, value)
-    }.value as N?
+    override fun <N : Any> fetch(key: String, type: Type): N? {
+        val lock = locks.get(key)
+
+        try {
+            lock.readLock().lock()
+            cache[key]?.let { return it.value as N? }
+        } finally {
+            lock.readLock().unlock()
+        }
+
+        try {
+            lock.writeLock().lock()
+            return cache.computeIfAbsent(key) {
+                val now = Clock.System.now()
+                val value = provider.tryGet<N>(key, type)
+                CacheEntry(now, value)
+            }.value as N?
+        } finally {
+            lock.writeLock().unlock()
+        }
+    }
+
 }
