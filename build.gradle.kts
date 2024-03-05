@@ -51,6 +51,7 @@ subprojects {
             jvmTarget = "17"
             apiVersion = "1.9"
             languageVersion = "1.9"
+            freeCompilerArgs += "-Xuse-ir"
         }
     }
 

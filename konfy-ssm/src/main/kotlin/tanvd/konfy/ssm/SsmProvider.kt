@@ -3,9 +3,12 @@ package tanvd.konfy.ssm
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import com.amazonaws.services.simplesystemsmanagement.model.ParameterNotFoundException
+import org.slf4j.LoggerFactory
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
+
+private const val KONFY_LOG_KEYS = "KONFY_LOG_KEYS"
 
 /**
  * Provider takes values from AWS SSM.
@@ -17,8 +20,21 @@ import java.lang.reflect.Type
 class SsmProvider(private val prefix: String?, private val separator: String,
                   private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
                   private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
+
+    private val logger = LoggerFactory.getLogger(SsmProvider::class.java)
+    private val konfyLogKeys = (System.getenv(KONFY_LOG_KEYS) ?: System.getProperty(KONFY_LOG_KEYS))
+        ?.split(",")
+        ?.map { it.trim() }.orEmpty()
+
+    init {
+        logger.info("SsmProvider initialized.")
+        logger.info("Konfy log keys: $konfyLogKeys")
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
+        log(key)
+
         val fullKey = (prefix?.let { "$it/$key" } ?: key).replace(separator, "/")
         val request = GetParameterRequest().withName(fullKey).withWithDecryption(true)
         return try {
@@ -27,4 +43,12 @@ class SsmProvider(private val prefix: String?, private val separator: String,
             null
         }
     }
+
+    private fun log(key: String) {
+        if (konfyLogKeys.contains(key)) {
+            val stackTrace = Thread.currentThread().stackTrace.joinToString("\n")
+            logger.info("Fetching parameter with key: $key \n Stack trace: \n $stackTrace")
+        }
+    }
+
 }
