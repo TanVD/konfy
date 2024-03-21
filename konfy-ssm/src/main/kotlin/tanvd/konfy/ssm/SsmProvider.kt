@@ -1,9 +1,9 @@
 package tanvd.konfy.ssm
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagement
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
-import com.amazonaws.services.simplesystemsmanagement.model.ParameterNotFoundException
 import org.slf4j.LoggerFactory
+import software.amazon.awssdk.services.ssm.SsmClient
+import software.amazon.awssdk.services.ssm.model.GetParameterRequest
+import software.amazon.awssdk.services.ssm.model.ParameterNotFoundException
 import tanvd.konfy.conversion.ConversionService
 import tanvd.konfy.provider.ConfigProvider
 import java.lang.reflect.Type
@@ -18,7 +18,7 @@ private const val KONFY_LOG_KEYS = "KONFY_LOG_KEYS"
  * @param separator separator used by a client, provider will map it to `/`
  */
 class SsmProvider(private val prefix: String?, private val separator: String,
-                  private val ssm: AWSSimpleSystemsManagement = SsmClient.defaultClient,
+                  private val ssm: SsmClient = SsmClientFactory.defaultClient,
                   private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
 
     private val logger = LoggerFactory.getLogger(SsmProvider::class.java)
@@ -36,9 +36,9 @@ class SsmProvider(private val prefix: String?, private val separator: String,
         log(key)
 
         val fullKey = (prefix?.let { "$it/$key" } ?: key).replace(separator, "/")
-        val request = GetParameterRequest().withName(fullKey).withWithDecryption(true)
+        val request = GetParameterRequest.builder().name(fullKey).withDecryption(true).build()
         return try {
-            ssm.getParameter(request)?.parameter?.value?.let { convert(it, type) as N }
+            ssm.getParameter(request)?.parameter()?.value()?.let { convert(it, type) as N }
         } catch (e: ParameterNotFoundException) {
             null
         }
