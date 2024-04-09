@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import tanvd.kosogor.proxy.publishJar
 
 group = "tanvd.konfy"
-version = "0.1.27"
+version = "0.1.28"
 
 plugins {
     id("tanvd.kosogor") version "1.0.18" apply false
     id("io.gitlab.arturbosch.detekt") version ("1.22.0") apply true
-    kotlin("jvm") version "1.9.21" apply false
+    kotlin("jvm") version "1.9.22" apply false
     `kotlin-dsl`
     `maven-publish`
 }
