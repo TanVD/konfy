@@ -16,6 +16,7 @@ Konfy supports plenty of formats with corresponding providers:
 * SSM (konfy-ssm) - support of AWS Simple System Manager parameters
 * KeePass (konfy-keepass) - support of parameters stored in kdbx encrypted files
 * Kara config (konfy-kara) - support of properties config with includes (Kara framework config)
+* HOCON (konfy-hocon) - support of HOCON configuration files
 
 ## Setup
 
