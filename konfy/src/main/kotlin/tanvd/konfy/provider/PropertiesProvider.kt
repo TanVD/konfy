@@ -13,6 +13,7 @@ class PropertiesProvider(private val file: File,
                          private val convert: (String, Type) -> Any? = ConversionService::convert) : ConfigProvider() {
     private val properties by lazy { Properties().apply { load(file.reader()) } }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <N : Any> fetch(key: String, type: Type): N? {
         val value = properties.getProperty(key) ?: return null
         return convert(value, type) as N?

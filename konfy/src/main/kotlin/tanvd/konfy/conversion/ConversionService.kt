@@ -14,7 +14,7 @@ import java.math.BigInteger
 object ConversionService {
     fun convert(value: String, type: Type): Any = when (type) {
         is WildcardType -> convert(value, type.upperBounds.single())
-        Int::class.java, java.lang.Integer::class.java -> value.toInt()
+        Int::class.java, Integer::class.java -> value.toInt()
         Float::class.java, java.lang.Float::class.java -> value.toFloat()
         Double::class.java, java.lang.Double::class.java -> value.toDouble()
         Long::class.java, java.lang.Long::class.java -> value.toLong()

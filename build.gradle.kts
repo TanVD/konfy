@@ -1,27 +1,45 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import tanvd.kosogor.proxy.publishJar
 
 group = "tanvd.konfy"
-version = "0.1.28"
+version = "0.1.29"
 
 plugins {
-    id("tanvd.kosogor") version "1.0.18" apply false
-    id("io.gitlab.arturbosch.detekt") version ("1.22.0") apply true
-    kotlin("jvm") version "1.9.22" apply false
+    id("tanvd.kosogor") version "1.0.22" apply true
+    kotlin("jvm") version "2.0.21" apply true
     `kotlin-dsl`
     `maven-publish`
 }
 
+repositories {
+    mavenCentral()
+}
+
 subprojects {
-    apply {
-        plugin("kotlin")
-        plugin("maven-publish")
-        plugin("tanvd.kosogor")
-        plugin("io.gitlab.arturbosch.detekt")
-    }
+    apply(plugin = "kotlin")
+    apply(plugin = "tanvd.kosogor")
 
     repositories {
         mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of("17"))
+        }
+    }
+
+    kotlin {
+        jvmToolchain(17)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            apiVersion.set(KotlinVersion.KOTLIN_1_9)
+            languageVersion.set(KotlinVersion.KOTLIN_2_0)
+            // https://jakewharton.com/kotlins-jdk-release-compatibility-flag/
+            // https://youtrack.jetbrains.com/issue/KT-49746/Support-Xjdk-release-in-gradle-toolchain#focus=Comments-27-8935065.0-0
+            freeCompilerArgs.addAll("-Xjdk-release=17")
+        }
     }
 
     publishJar {  }
@@ -36,36 +54,6 @@ subprojects {
                     username = System.getenv("JB_SPACE_CLIENT_ID")
                     password = System.getenv("JB_SPACE_CLIENT_SECRET")
                 }
-            }
-        }
-    }
-
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
-    }
-
-    tasks.withType<KotlinJvmCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = "17"
-            apiVersion = "1.9"
-            languageVersion = "1.9"
-            freeCompilerArgs += "-Xuse-ir"
-        }
-    }
-
-    detekt {
-        parallel = true
-
-        config = rootProject.files("detekt.yml")
-
-        reports {
-            xml {
-                enabled = false
-            }
-            html {
-                enabled = false
             }
         }
     }

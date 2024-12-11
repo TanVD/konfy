@@ -1,17 +1,18 @@
 package tanvd.konfy.keepass
 
-import de.slackspace.openkeepass.KeePassDatabase
-import de.slackspace.openkeepass.domain.KeePassFile
+import org.linguafranca.pwdb.kdbx.KdbxCreds
+import org.linguafranca.pwdb.kdbx.dom.DomDatabaseWrapper
 import java.io.File
 
 internal class KeepassClient(databaseFile: File, masterPassword: String) {
-    private lateinit var database: KeePassFile
+    private lateinit var database: DomDatabaseWrapper
 
     init {
-        if (databaseFile.exists()) database = KeePassDatabase.getInstance(databaseFile).openDatabase(masterPassword)
+        val credentials = KdbxCreds(masterPassword.toByteArray())
+        if (databaseFile.exists()) database =  DomDatabaseWrapper.load(credentials, databaseFile.inputStream())
     }
 
     fun get(title: String): String? {
-        return database.getEntryByTitle(title)?.password
+        return database.findEntries { it.title == title }.firstOrNull()?.password
     }
 }
