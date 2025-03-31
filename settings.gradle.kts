@@ -6,4 +6,4 @@ include(":konfy-keepass")
 include(":konfy-ssm")
 include(":konfy-kara")
 include(":konfy-k8s")
-
+include(":konfy-hocon")
